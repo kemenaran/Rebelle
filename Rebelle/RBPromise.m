@@ -72,6 +72,22 @@ NSString *const RBPromisePropertyResolved = @"resolved";
    [self.executer_ removeObserver:self forKeyPath:@"executed"];
 }
 
+#pragma mark - Set resolve callbacks using selector
+
+- (id<RBThenable>)thenOnFulfilled:(RBPromiseFulfilled)fulfilledBlock {
+    return [self thenOnFulfilled:fulfilledBlock onRejected:NULL];
+}
+
+- (id<RBThenable>)thenOnRejected:(RBPromiseRejected)rejectedBlock {
+    return [self thenOnFulfilled:NULL onRejected:rejectedBlock];
+}
+
+- (id<RBThenable>) thenOnFulfilled:(RBPromiseFulfilled)fulfilledBlock onRejected:(RBPromiseRejected)rejectedBlock {
+    return self.then(fulfilledBlock, rejectedBlock);
+}
+
+#pragma mark - Resolving promise
+
 - (void)resolve:(id)value {
    if (value == self)
       @throw [NSException exceptionWithName:NSInvalidArgumentException

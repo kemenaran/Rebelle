@@ -56,18 +56,18 @@
     
     [self setSearching:YES];
     
-    [_navitiaClient placesForQuery:_queryTextField.text]
-    .then( ^id(NSArray * places) {
-        NSArray * placesNames = [places valueForKey:@"name"];
-        _resultsTextView.text = [placesNames componentsJoinedByString:@"\n"];
-        [self setSearching:NO];
-        return nil;
-        
-    }, ^id(RBErrorException * e) {
-        [self presentError:e.error];
-        [self setSearching:NO];
-        return nil;
-    });
+    [[_navitiaClient placesForQuery:_queryTextField.text]
+     thenOnFulfilled:^id(NSArray * places) {
+         NSArray * placesNames = [places valueForKey:@"name"];
+         _resultsTextView.text = [placesNames componentsJoinedByString:@"\n"];
+         [self setSearching:NO];
+         return nil;
+     }
+     onRejected:^id(RBErrorException * e) {
+         [self presentError:e.error];
+         [self setSearching:NO];
+         return nil;
+     }];
 }
 
 #pragma mark Helpers

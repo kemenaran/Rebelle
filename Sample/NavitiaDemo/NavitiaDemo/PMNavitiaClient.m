@@ -71,16 +71,15 @@
     
     [task resume];
     
-    return promise.then( ^(NSData * data) {
+    return [[promise thenOnFulfilled:^id(NSData * data) {
         NSError * jsonError;
         NSDictionary * jsonResponse = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
         return jsonResponse ?: jsonError;
-    }, nil)
-    
-    .then( ^(NSDictionary * jsonResponse) {
+        
+    }] thenOnFulfilled:^id(NSDictionary * jsonResponse) {
         NSError * noPlacesError = [NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorBadServerResponse userInfo:nil];
         return jsonResponse[@"places"] ?: noPlacesError;
-    }, nil);
+    }];
 }
 
 @end

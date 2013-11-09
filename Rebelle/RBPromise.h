@@ -39,7 +39,16 @@ typedef enum {
  */
 @interface RBPromise : NSObject<RBThenable>
 
+/// Setting callback blocks.
+/// There are two for this: one using block syntax (more easily chainable) and one
+/// using selector syntax (more idiomatic).
+
+/// Set resolve callbacks using block syntax
 @property(nonatomic, copy, readonly)RBThenableThen then;
+/// Set resolve callbacks using selector syntax
+- (RBPromise*) thenOnFulfilled:(RBPromiseFulfilled)fulfilledBlock;
+- (RBPromise*) thenOnRejected:(RBPromiseRejected)rejectedBlock;
+- (RBPromise*) thenOnFulfilled:(RBPromiseFulfilled)fulfilledBlock onRejected:(RBPromiseRejected)rejectedBlock;
 
 /// the promise state
 /// - Pending, resolve has not yet happened or nothing started inside it
