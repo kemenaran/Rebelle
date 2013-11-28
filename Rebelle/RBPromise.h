@@ -16,6 +16,9 @@ typedef enum {
    RBPromiseStateRejected
 } RBPromiseState;
 
+typedef void(^RBPromiseAlways)();
+typedef id<RBThenable>(^RBThenableAlways)(RBPromiseAlways);
+
 /**
  * Thenable promise
  * - Call "then" if you want to define actions to occur once promise has been resolved
@@ -45,10 +48,12 @@ typedef enum {
 
 /// Set resolve callbacks using block syntax
 @property(nonatomic, copy, readonly)RBThenableThen then;
+@property(nonatomic, copy, readonly)RBThenableAlways always;
 /// Set resolve callbacks using selector syntax
 - (RBPromise*) thenOnFulfilled:(RBPromiseFulfilled)fulfilledBlock;
 - (RBPromise*) thenOnRejected:(RBPromiseRejected)rejectedBlock;
 - (RBPromise*) thenOnFulfilled:(RBPromiseFulfilled)fulfilledBlock onRejected:(RBPromiseRejected)rejectedBlock;
+- (RBPromise*) always:(RBPromiseAlways)alwaysBlock;
 
 /// the promise state
 /// - Pending, resolve has not yet happened or nothing started inside it

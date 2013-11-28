@@ -17,6 +17,7 @@ NSString *const RBPromisePropertyResolved = @"resolved";
 
 @interface RBPromise ()
 @property(nonatomic, copy)RBThenableThen     then;
+@property(nonatomic, copy)RBThenableAlways   always;
 @property(nonatomic, assign)RBPromiseState   state;
 
 @property(nonatomic, strong)NSObject         *result_;
@@ -64,7 +65,16 @@ NSString *const RBPromisePropertyResolved = @"resolved";
 
       return promise;
    };
-
+   
+   self.always = ^id<RBThenable>(RBPromiseAlways always) {
+      id (^alwaysBlock)(id) = ^id(id result) {
+         if (always)
+             always();
+         return result;
+      };
+      return this.then(alwaysBlock, alwaysBlock);
+   };
+   
    return self;
 }
 
@@ -84,6 +94,10 @@ NSString *const RBPromisePropertyResolved = @"resolved";
 
 - (id<RBThenable>) thenOnFulfilled:(RBPromiseFulfilled)fulfilledBlock onRejected:(RBPromiseRejected)rejectedBlock {
     return self.then(fulfilledBlock, rejectedBlock);
+}
+
+- (id<RBThenable>) always:(RBPromiseAlways)alwaysBlock {
+    return self.always(alwaysBlock);
 }
 
 #pragma mark - Resolving promise
